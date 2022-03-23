@@ -1,15 +1,17 @@
 const empresa = "Sistema Omma";
 console.log(`Seja bem vindo ao ${empresa}`);
 
-const listaDeReceitas = [{
-  id: 1,
-  titulo: "Cachorro Quente",
-  dificuldade: "simples",
-  ingredientes: ["1 pao de leite", "1 Salsicha", "Maionese"],
-  preparo: "jodbvnujd osbvcujsbn jsbfusb",
-  link: "youtube.com",
-  vegano: false,
-}, ];
+const listaDeReceitas = [
+  {
+    id: 1,
+    titulo: "Cachorro Quente",
+    dificuldade: "simples",
+    ingredientes: ["1 pao de leite", "1 Salsicha", "Maionese"],
+    preparo: "jodbvnujd osbvcujsbn jsbfusb",
+    link: "youtube.com",
+    vegano: false,
+  },
+];
 
 const cadastrarReceita = (
   id,
@@ -36,24 +38,52 @@ const cadastrarReceita = (
 
 const btnEnviar = document.querySelector("#btnEnviar");
 
+btnEnviar.onclick = (evento) => {
+  //impede que a pagina seja recarregada
+  evento.preventDefault();
+
+  // alert('formulario enviado!')
+
+  //selecionando campos do formulário
+  let inputTitulo = document.querySelector("#titulo");
+  let inputDificuldade = document.querySelector("#dificuldade");
+  let inputIngredientes = document.querySelector("#ingredientes");
+  let inputPreparo = document.querySelector("#preparo");
+  let inputLink = document.querySelector("#link");
+  let inputVegano = document.querySelector("input[name='vegano']:checked");
+
+  let novaReceita = {
+    id: listaDeReceitas.length,
+    titulo: inputTitulo.value,
+    dificuldade: inputDificuldade.value,
+    ingredientes: inputIngredientes.value.split(","),
+    preparo: inputPreparo.value,
+    link: inputLink.value,
+    vegano: inputVegano.value ? inputVegano.value : "não",
+  };
+
+  console.log(novaReceita);
+  listaDeReceitas.push(novaReceita);
+
+  exibirReceitas();
+};
 
 function exibirReceitas() {
+  let htmlReceitas = "";
+
   for (let index = 0; index < listaDeReceitas.length; index++) {
-    const receita = listaDeReceitas[index];
-    console.log("--------------------------------");
-    console.log("Titulo = " + receita.titulo);
-
-    for (let index = 0; index < receita.ingredientes.length; index++) {
-      const ingrediente = receita.ingredientes[index];
-      console.log("ingredientes = " + ingrediente);
-    }
-
-    console.log("É vegano? " + receita.vegano);
-    console.log("--------------------------------");
+    htmlReceitas += `<article class="card">
+          <h2>${listaDeReceitas[index].titulo}</h2>
+          <small>Dificuldade: ${listaDeReceitas[index].dificuldade}</small>
+          <p>${listaDeReceitas[index].preparo}</p>
+      </article>`;
   }
+
+  let painelReceitas = document.querySelector(".painel-receitas");
+  painelReceitas.innerHTML = htmlReceitas;
 }
 
-// exibirReceitas();
+exibirReceitas();
 
 function deletarReceita(id) {
   let novaListaDeReceitas = [];
@@ -87,9 +117,7 @@ function deletarReceita(id) {
   console.log("receita deletada com sucesso!");
 }
 
-
 const condicaoDeReceita = (receita) => (receita.vegano = true);
-
 
 const atualizaReceita = (id, receitaAtualizada) => {
   let foiAtualizado = false;
@@ -111,18 +139,16 @@ const atualizaReceita = (id, receitaAtualizada) => {
   });
 
   console.log(
-    foiAtualizado ?
-    "Receita atualizada com sucesso!" :
-    "Não foi encontrado o id"
+    foiAtualizado
+      ? "Receita atualizada com sucesso!"
+      : "Não foi encontrado o id"
   );
 };
 
-
 const buscarReceita = (termoBuscado) => {
-
   const resultados = listaDeReceitas.filter(
     (receita) =>
-    receita.titulo.toLowerCase().indexOf(termoBuscado.toLowerCase()) != -1
+      receita.titulo.toLowerCase().indexOf(termoBuscado.toLowerCase()) != -1
   );
 
   // if (resultados.length) {
